@@ -1,27 +1,33 @@
 import "dart:async";
 import "dart:io";
-import "dart:math";
 import "workers.dart";
 
 int isolates = Platform.numberOfProcessors;
 int per = 900000;
 
-void _worker(port) {
-  var socket = new WorkerSocket.worker(port);
-  
-  socket.listen((i) {
-    socket.add(4 * pow(-1, i) / ((2 * i) + 1));
-  });
-}
-
 double pi = 0.0;
 
 void main() {
+  print("Warming up...");
+  
+  {
+    int grandTotal = 0;
+    for (var time in range(1, 50)) {
+      int total = 0;
+      for (var number in range(0, per * 5)) {
+        total += number;
+      }
+      grandTotal += total;
+    }
+  }
+  
+  print("Warm up complete.");
+  
   print("Spawning workers...");
   
   for (var isolateNumber in range(0, isolates - 1)) {
     counts[isolateNumber] = 0;
-    var worker = workers[isolateNumber] = createWorker(_worker);
+    var worker = workers[isolateNumber] = createWorkerScript("pi_worker.dart");
     worker.listen((data) {
       pi += data;
       counts[isolateNumber] = counts[isolateNumber] + 1;
