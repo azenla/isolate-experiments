@@ -13,11 +13,11 @@ WorkerSocket createWorker(WorkerFunction function) {
   return socket;
 }
 
-WorkerSocket createWorkerScript(String path) {
+WorkerSocket createWorkerScript(String path, {List<String> args: const []}) {
   var receiver = new ReceivePort();
   var file = new File(path);
   var uri = new Uri.file(file.path);
-  Isolate.spawnUri(uri, [], receiver.sendPort);
+  Isolate.spawnUri(uri, args, receiver.sendPort);
   var socket = new WorkerSocket.master(receiver);
   return socket;
 }

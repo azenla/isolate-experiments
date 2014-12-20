@@ -27,7 +27,7 @@ void main() {
   
   for (var isolateNumber in range(0, isolates - 1)) {
     counts[isolateNumber] = 0;
-    var worker = workers[isolateNumber] = createWorkerScript("pi_worker.dart");
+    var worker = workers[isolateNumber] = createWorkerScript("pi_worker.dart", args: ["${isolateNumber}"]);
     worker.listen((data) {
       pi += data;
       counts[isolateNumber] = counts[isolateNumber] + 1;
